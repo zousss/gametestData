@@ -1,0 +1,71 @@
+# -*- coding: utf-8 -*-
+from scrapy.spiders import CrawlSpider
+import scrapy
+import time
+import re
+from scrapy.selector import Selector
+from selenium import webdriver
+from gametestData.items import GametestdataItem
+
+#class gametestSpider(CrawlSpider):
+#    #用于区别Spider。 该名字必须是唯一的，不可以为不同的Spider设定相同的名字。
+#    name = "gametestSpider"
+#    start_urls = ['http://newgame.17173.com/testing-list.html']
+#    base_url = 'http://newgame.17173.com/testing-list.html?page='
+#    extra = '&tab=0&type=0&theme=0&frame=0&testTime=0'
+#    file = 'D://Python27//workSpace//gametestData//gametestData//spiders//log.txt'
+#    fo = open(file, "w+")
+#    i = 2
+#    url = 'http://newgame.17173.com/testing-list.html'
+#
+#    #获取搜索结果内容，并且获取下一页的链接
+#    def parse(self,response):
+#        print response.url
+#        #js渲染页面respon无法获取，使用selenium来解析
+#        driver = webdriver.PhantomJS()
+#        driver.get(response.url)
+#        content = driver.page_source
+#        next_judge = driver.find_element_by_xpath('//*[@id="content"]/div/div[2]/div[1]/a[@class="js-get-more"]')
+#        driver.close()
+#        for games in Selector(text = content).xpath('//*[@id="testInfoList"]/tbody/tr'):
+#            game_href = games.xpath('td[2]/a/@href').extract()[0]
+#            game_link = 'http://newgame.17173.com'+game_href
+#            game_info = scrapy.Request(game_link,callback=self.parse_game_info)
+#            yield game_info
+#        if next_judge:
+#            next_link = self.base_url+str(self.i)+self.extra
+#            self.i += 1
+#            next_page = scrapy.Request(next_link,callback=self.parse)
+#            yield next_page
+#
+#    def parse_game_info(self,response):
+#        driver = webdriver.PhantomJS()
+#        driver.get(response.url)
+#        content = driver.page_source
+#        driver.close()
+#
+#        for game_info in Selector(text = content).xpath('/html/body/div[3]/div[2]/div[2]/div/div[@class="pn-bd"]'):
+#            gametestItem = GametestdataItem()
+#            gametestItem['url'] = self.url
+#            gametestItem['game_id'] = re.search(r'.*-(\d+).*',response.url).group(1)
+#            gametestItem['game_name'] = ''.join(game_info.xpath('div[2]/div[1]/div/h1/text()').extract())
+#            gametestItem['game_plat'] = ';'.join(game_info.xpath('div[2]/ul/li[2]/a/text()').extract())
+#            gametestItem['game_style'] = ''.join(game_info.xpath('div[2]/ul/li[1]/a/text()').extract())
+#            gametestItem['game_frame'] = ''.join(game_info.xpath('div[2]/ul/li[3]/a/text()').extract())
+#            gametestItem['game_developer'] = ''.join(game_info.xpath('div[2]/ul/li[4]/a/text()').extract())
+#            gametestItem['game_operator'] = ''.join(game_info.xpath('div[2]/ul/li[6]/span[2]/a/text()').extract())
+#            gametestItem['game_theme'] = ''.join(game_info.xpath('div[2]/ul/li[5]/a/text()').extract())
+#            gametestItem['game_pattern'] = ''.join(game_info.xpath('div[2]/ul/li[7]/a/text()').extract())
+#            gametestItem['game_type'] = ''.join(game_info.xpath('div[2]/ul/li[9]/a/text()').extract())
+#
+#            game_history1 = ''.join(game_info.xpath('div[2]/ul/li[11]/div/span/text()').extract())
+#            game_history2 = ';'.join(game_info.xpath('div[2]/ul/li[11]/div/div/div/text()').extract())
+#            gametestItem['game_history'] = game_history1+';'+game_history2
+#
+#            gametestItem['game_charge'] = ''.join(game_info.xpath('div[2]/ul/li[8]/span[2]/text()').extract())
+#
+#            gametestItem['game_img'] = ''.join(game_info.xpath('div[1]/div[1]/img/@src').extract())
+#            gametestItem['game_vote'] = ''.join(game_info.xpath('div[1]/div[2]/div[1]/a/span[2]/text()').extract())
+#            gametestItem['game_rank'] = ''.join(game_info.xpath('div[1]/div[2]/div[2]/a/b/text()').extract())
+#            gametestItem['record_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+#            yield gametestItem
